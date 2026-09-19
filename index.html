@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crystal Apartments · Kigali, Rwanda</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="nav">
+    <a class="brand" href="#top">Crystal Apartments</a>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#collection">Collection</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="top">
+
+    <section class="hero">
+      <img class="hero-img" src="images/hero.jpg" alt="Crystal Apartments tower at dusk">
+      <div class="hero-inner">
+        <div class="eyebrow">Kigali · Rwanda</div>
+        <h1>Live above <em>the ordinary.</em></h1>
+        <p>Nine considered residences designed for a quieter, more elevated way of living at KG 14 Ave.</p>
+        <a class="btn" href="#collection">Explore the collection</a>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <img src="images/lobby.jpg" alt="The Crystal Apartments lobby with marble floors and brass lighting">
+      <div>
+        <div class="eyebrow">The Crystal standard</div>
+        <h2>Made for the way you want to live.</h2>
+        <p>Crystal Apartments brings together thoughtful architecture, considered interiors, and a level of service that feels personal. Every residence is a study in warm materials, natural light, and effortless comfort.</p>
+        <div class="stats">
+          <div class="stat"><b>09</b><span>Private residences</span></div>
+          <div class="stat"><b>24/7</b><span>Resident care</span></div>
+          <div class="stat"><b>KG 14</b><span>Kigali address</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="collection" id="collection">
+      <div class="col-head">
+        <div>
+          <div class="eyebrow">The collection</div>
+          <h2>Nine distinct expressions.</h2>
+        </div>
+        <p>A curated selection of interiors, details, and spaces that make Crystal Apartments feel like home. Select a house to see its rooms.</p>
+      </div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <section class="contact" id="contact">
+      <div>
+        <div class="eyebrow">Begin a conversation</div>
+        <h2>Come see for yourself.</h2>
+        <p class="lead">Our team would be delighted to introduce you to Crystal Apartments and help you find the residence that feels like yours.</p>
+        <dl class="details">
+          <div>
+            <dt>Visit</dt>
+            <dd>KG 14 Avenue, Kigali, Rwanda</dd>
+          </div>
+          <div>
+            <dt>Email</dt>
+            <dd><a href="mailto:crystalapartment2020@gmail.com">crystalapartment2020@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd><a href="tel:+250788202020">+250 788 202 020</a></dd>
+          </div>
+        </dl>
+      </div>
+
+      <div>
+        <div class="map" role="img" aria-label="Location of Crystal Apartments, KG 14 Ave, Kigali">
+          <b>Crystal Apartments</b>
+          <span>KG 14 Ave · Kigali, Rwanda</span>
+          <a class="btn" target="_blank" rel="noopener"
+             href="https://www.google.com/maps/search/?api=1&query=Crystal+Apartments+KG+14+Ave+Kigali+Rwanda">Open in Maps</a>
+        </div>
+
+        <form id="viewing" novalidate>
+          <h3>Request a viewing</h3>
+          <p class="sub">Tell us when suits you and we'll confirm by phone or email.</p>
+
+          <div class="fields">
+            <div>
+              <label for="f-name">Full name</label>
+              <input id="f-name" name="name" autocomplete="name" required>
+            </div>
+            <div>
+              <label for="f-phone">Phone</label>
+              <input id="f-phone" name="phone" type="tel" autocomplete="tel">
+            </div>
+            <div class="full">
+              <label for="f-email">Email</label>
+              <input id="f-email" name="email" type="email" autocomplete="email" required>
+            </div>
+            <div>
+              <label for="f-house">House</label>
+              <select id="f-house" name="house"></select>
+            </div>
+            <div>
+              <label for="f-date">Preferred date</label>
+              <input id="f-date" name="date" type="date">
+            </div>
+            <div class="full">
+              <label for="f-msg">Message (optional)</label>
+              <textarea id="f-msg" name="msg"></textarea>
+            </div>
+          </div>
+
+          <div class="form-foot">
+            <button class="btn solid" type="submit">Send on WhatsApp</button>
+            <button class="btn" type="button" id="gmail-btn">Send by Gmail</button>
+            <span class="status" id="status" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2026 Crystal Apartments</span>
+    <span>Kigali · Rwanda</span>
+  </footer>
+
+  <script src="houses.js"></script>
+  <script>
+    /* ---- Contact settings: change these if needed ---- */
+    const WHATSAPP_NUMBER = "250788202020";   // digits only, no + or spaces
+    const EMAIL = "crystalapartment2020@gmail.com";
+
+    /* ----- Collection cards ----- */
+    const grid = document.getElementById("grid");
+
+    HOUSES.forEach((h, i) => {
+      const card = document.createElement("a");
+      card.className = "card";
+      card.href = "house.html?id=" + (i + 1);
+
+      const photo = h.cover
+        ? `<div class="ph"><img src="${h.cover}" alt="${h.name}" loading="lazy"></div>`
+        : `<div class="ph empty">Photo coming soon</div>`;
+
+      const beds = String(h.beds).padStart(2, "0") + " " + (h.beds === 1 ? "Bedroom" : "Bedrooms");
+
+      card.innerHTML =
+        photo +
+        `<div class="info">
+           <h3>${h.name}</h3>
+           <p class="tag">${h.tag}</p>
+           <div class="price">${priceHTML(h)}</div>
+           <div class="spec"><span>${beds}</span><span class="more">View rooms →</span></div>
+         </div>`;
+
+      grid.appendChild(card);
+    });
+
+    /* ----- Viewing form ----- */
+    const houseSelect = document.getElementById("f-house");
+    houseSelect.innerHTML =
+      `<option value="">Not sure yet</option>` +
+      HOUSES.map(h => `<option value="${h.name}">${h.name}</option>`).join("");
+
+    document.getElementById("f-date").min = new Date().toISOString().slice(0, 10);
+
+    const form = document.getElementById("viewing");
+    const status = document.getElementById("status");
+
+    // Checks the form. Returns the answers, or null if something is missing.
+    function readForm() {
+      const v = Object.fromEntries(new FormData(form));
+      if (!v.name.trim() || !/^\S+@\S+\.\S+$/.test(v.email.trim())) {
+        status.className = "status err";
+        status.textContent = "Please add your name and a valid email so we can reply.";
+        return null;
+      }
+      return v;
+    }
+
+    // Turns the answers into a readable message
+    function summary(v) {
+      return [
+        "Name: " + v.name,
+        "Email: " + v.email,
+        "Phone: " + (v.phone || "-"),
+        "House: " + (v.house || "Not sure yet"),
+        "Preferred date: " + (v.date || "-"),
+        v.msg ? "\n" + v.msg : ""
+      ].join("\n");
+    }
+
+    // Button 1: WhatsApp
+    form.addEventListener("submit", e => {
+      e.preventDefault();
+      const v = readForm();
+      if (!v) return;
+
+      const text = "Hello Crystal Apartments, I would like to request a viewing.\n\n" + summary(v);
+      status.className = "status";
+      status.textContent = "Opening WhatsApp. Press send there to finish.";
+      window.open("https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(text), "_blank", "noopener");
+    });
+
+    // Button 2: Gmail in the browser
+    document.getElementById("gmail-btn").addEventListener("click", () => {
+      const v = readForm();
+      if (!v) return;
+
+      const subject = "Viewing request: " + (v.house || "Not sure yet");
+      status.className = "status";
+      status.textContent = "Opening Gmail. Press send there to finish.";
+      window.open(
+        "https://mail.google.com/mail/?view=cm&fs=1" +
+        "&to=" + encodeURIComponent(EMAIL) +
+        "&su=" + encodeURIComponent(subject) +
+        "&body=" + encodeURIComponent(summary(v)),
+        "_blank", "noopener"
+      );
+    });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>House · Crystal Apartments</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <header class="nav">
+    <a class="brand" href="index.html">Crystal Apartments</a>
+    <nav>
+      <ul>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#collection">Collection</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="house-head">
+      <a class="back" href="index.html#collection">← All houses</a>
+      <div class="eyebrow" id="h-eyebrow"></div>
+      <h1 id="h-title"></h1>
+      <p id="h-tag"></p>
+      <div class="house-price" id="h-price"></div>
+    </section>
+
+    <section class="rooms" id="rooms"></section>
+
+    <section class="house-foot">
+      <div class="pn" id="pn"></div>
+      <a class="btn" href="index.html#contact">Request a viewing</a>
+    </section>
+  </main>
+
+  <dialog id="lightbox" class="lb">
+    <button class="lb-close" id="lb-close" aria-label="Close">×</button>
+    <img id="lb-img" alt="">
+    <div class="lb-cap" id="lb-cap"></div>
+  </dialog>
+
+  <script src="houses.js"></script>
+  <script>
+    // Which house? The address looks like house.html?id=3
+    const params = new URLSearchParams(location.search);
+    let id = parseInt(params.get("id"), 10);
+    if (!(id >= 1 && id <= HOUSES.length)) id = 1;
+    const house = HOUSES[id - 1];
+
+    document.title = house.name + " · Crystal Apartments";
+    document.getElementById("h-eyebrow").textContent =
+      String(house.beds).padStart(2, "0") + " " + (house.beds === 1 ? "Bedroom" : "Bedrooms");
+    document.getElementById("h-title").textContent = house.name;
+    document.getElementById("h-tag").textContent = house.tag;
+    document.getElementById("h-price").innerHTML = priceHTML(house);
+
+    // Room tiles
+    const roomsEl = document.getElementById("rooms");
+    const lightbox = document.getElementById("lightbox");
+
+    house.rooms.forEach(r => {
+      const tile = document.createElement(r.img ? "button" : "div");
+      tile.className = "room";
+
+      if (r.img) {
+        tile.type = "button";
+        tile.innerHTML =
+          `<div class="ph"><img src="${r.img}" alt="${house.name} ${r.name}" loading="lazy"></div>` +
+          `<div class="cap">${r.name}<small>View</small></div>`;
+        tile.addEventListener("click", () => {
+          document.getElementById("lb-img").src = r.img;
+          document.getElementById("lb-img").alt = house.name + " " + r.name;
+          document.getElementById("lb-cap").textContent = house.name + " · " + r.name;
+          lightbox.showModal();
+        });
+      } else {
+        tile.innerHTML =
+          `<div class="ph empty">Photo coming soon</div>` +
+          `<div class="cap">${r.name}</div>`;
+      }
+      roomsEl.appendChild(tile);
+    });
+
+    // Close the big photo
+    document.getElementById("lb-close").addEventListener("click", () => lightbox.close());
+    lightbox.addEventListener("click", e => { if (e.target === lightbox) lightbox.close(); });
+
+    // Previous / next house links
+    const pn = document.getElementById("pn");
+    if (id > 1) pn.innerHTML += `<a href="house.html?id=${id - 1}">← ${HOUSES[id - 2].name}</a>`;
+    if (id < HOUSES.length) pn.innerHTML += `<a href="house.html?id=${id + 1}">${HOUSES[id].name} →</a>`;
+  </script>
+
+</body>
+</html>
